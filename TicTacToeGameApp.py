@@ -10,13 +10,14 @@ def main():
         print("\nSearch strategy for O is " + searchStrategyO + "\n")
         print("\nSearch strategy for X is " + searchStrategyX + "\n")
 
-        tttObject = TicTacToe(size, size, size)
+        tttObject = TicTacToe(int(size), int(size), int(size))
         print("Search strategy for play X is: " + searchStrategyX)
-        tttObject.strategy(searchStrategyX)
         print("Search strategy for play O is: " + searchStrategyO)
-        tttObject.strategy(searchStrategyO)
+        # def game(self, searchStrategyX, searchStrategyO):
+        print(tttObject.printBoard())
+        tttObject.game(searchStrategyX, searchStrategyO)
 
-        response = input("Would you like to run the game again? ('Yes' or 'No') .\n> ")
+        response = input("Would you like to run the game again? ('Yes' or 'No') .\n> ").title()
     print("Thank you for Playing Our Game.")
 
 

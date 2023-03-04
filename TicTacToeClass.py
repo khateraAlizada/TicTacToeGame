@@ -60,15 +60,99 @@ class Board(defaultdict):
         return '\n'.join(map(row, range(self.height))) + '\n'
 
 
->>>>>>> Ian
+
 class TicTacToe(Game):
     """Play TicTacToe on an `height` by `width` board, needing `k` in a row to win.
     'X' plays first against 'O'."""
 
-    def __init__(self, height=3, width=3, k=3):
-        self.k = k # k in a row
-        self.squares = {(x, y) for x in range(width) for y in range(height)}
-        self.initial = Board(height=height, width=width, to_move='X', utility=0)
+    def __init__(self, numRows, numCols, numWin):
+        self.numRows = numRows
+        self.numCols = numCols
+        self.numWin = numWin
+        self.board = [['' for j in range(numCols)] for i in range(numRows)]
+        self.currentPlayer = 'X'
+       # self.initial = Board(height=height, width=width, to_move='X', utility=0)
+
+    def printBoard(self):
+        for i in range(self.numRows):
+            for j in range(self.numCols):
+                print(self.board[i][j], end='')
+                if j < self.numCols - 1:
+                    print('|', end='')
+            print()
+            if i <self.numRows - 1:
+                print('_' *(self.numCols*2 - 1))
+    def getLegalMoves(self):
+        legalMoves = []
+        for i in range(self.numRows):
+            for j in range(self.numCols):
+                if self.board[i][j] == ' ':
+                    legalMoves.append((i, j))
+        return legalMoves
+    def makeMove(self, move):
+        i, j = move
+        self.board[i][j] = self.currentPlayer
+
+    def switchPlayer(self):
+        if self.currentPlayer =='X':
+            self.currentPlayer = 'O'
+        else:
+            self.currentPlayer = 'X'
+    def checkWin(self):
+        # check rows
+        for i in range(self.numRows):
+            row = self.board[i]
+            if len(set(row)) == 1 and row[0] != ' ':
+                return True
+        # check columns
+        for j in range(self.numCols):
+            col = [self.board[i][j] for i in range(self.numRows)]
+            if len(set(col)) == 1 and col[0] != ' ':
+                return True
+        # check diagonals
+        diag1 = [self.board[i][i] for i in range(self.numRows)]
+        diag2 = [self.board[i][self.numCols-1-i] for i in range(self.numRows)]
+        if len(set(diag1)) == 1 and diag1[0] != ' ':
+            return True
+        if len(set(diag2)) == 1 and diag2[0] != ' ':
+            return True
+        return False
+    def game(self, searchStrategyX, searchStrategyO):
+        while True:
+            legalMoves = self.getLegalMoves()
+            if not legalMoves:
+                print("Game Over: Tie")
+                break
+
+            if self.currentPlayer == 'X':
+                print("Player X's Turn")
+                if searchStrategyX == 'random':
+                    move = random.choice(legalMoves)
+                elif searchStrategyX == 'alpha':
+                    move = self.alphabeta_search()
+                else:
+                    move = self.minimax_search()
+            else:
+                print("Player O's Turn")
+                if searchStrategyO == 'random':
+                    move = random.choice(legalMoves)
+                elif searchStrategyO == 'alpha':
+                    move = self.alphabeta_search()
+                else:
+                    move = self.minimax_search()
+            print("Move: ", move)
+            self.makeMove(move)
+            self.printBoard()
+
+            if self.checkWin():
+                print("Game Over: Player", self.currentPlayer, "wins!")
+                break
+
+            self.switchPlayer()
+
+
+
+
 
     def actions(self, board):
         """Legal moves are any square not yet taken."""
@@ -93,91 +177,91 @@ class TicTacToe(Game):
     def display(self, board): print(board)
 
 
-def k_in_row(board, player, square, k):
-    """True if player has k pieces in a line through square."""
-    def in_row(x, y, dx, dy): return 0 if board[x, y] != player else 1 + in_row(x + dx, y + dy, dx, dy)
-    return any(in_row(*square, dx, dy) + in_row(*square, -dx, -dy) - 1 >= k
+    def k_in_row(board, player, square, k):
+        """True if player has k pieces in a line through square."""
+        def in_row(x, y, dx, dy): return 0 if board[x, y] != player else 1 + in_row(x + dx, y + dy, dx, dy)
+        return any(in_row(*square, dx, dy) + in_row(*square, -dx, -dy) - 1 >= k
                for (dx, dy) in ((0, 1), (1, 0), (1, 1), (1, -1)))
 
-def play_game(game, strategies: dict, verbose=False):
-    """Play a turn-taking game. `strategies` is a {player_name: function} dict,
-    where function(state, game) is used to get the player's move."""
-    state = game.initial
-    while not game.is_terminal(state):
+    def play_game(game, strategies: dict, verbose=False):
+        """Play a turn-taking game. `strategies` is a {player_name: function} dict,
+        where function(state, game) is used to get the player's move."""
+        state = game.initial
+        while not game.is_terminal(state):
+            player = state.to_move
+            move = strategies[player](game, state)
+            state = game.result(state, move)
+            if verbose:
+                print('Player', player, 'move:', move)
+                print(state)
+        return state
+
+    def minimax_search(game, state):
+        """Search game tree to determine best move; return (value, move) pair."""
+
         player = state.to_move
-        move = strategies[player](game, state)
-        state = game.result(state, move)
-        if verbose:
-            print('Player', player, 'move:', move)
-            print(state)
-    return state
 
-def minimax_search(game, state):
-    """Search game tree to determine best move; return (value, move) pair."""
+        def max_value(state):
+            if game.is_terminal(state):
+                return game.utility(state, player), None
+            v, move = -infinity, None
+            for a in game.actions(state):
+                v2, _ = min_value(game.result(state, a))
+                if v2 > v:
+                    v, move = v2, a
+            return v, move
 
-    player = state.to_move
+        def min_value(state):
+            if game.is_terminal(state):
+                return game.utility(state, player), None
+            v, move = +infinity, None
+            for a in game.actions(state):
+                v2, _ = max_value(game.result(state, a))
+                if v2 < v:
+                    v, move = v2, a
+            return v, move
 
-    def max_value(state):
-        if game.is_terminal(state):
-            return game.utility(state, player), None
-        v, move = -infinity, None
-        for a in game.actions(state):
-            v2, _ = min_value(game.result(state, a))
-            if v2 > v:
-                v, move = v2, a
-        return v, move
+        return max_value(state)
 
-    def min_value(state):
-        if game.is_terminal(state):
-            return game.utility(state, player), None
-        v, move = +infinity, None
-        for a in game.actions(state):
-            v2, _ = max_value(game.result(state, a))
-            if v2 < v:
-                v, move = v2, a
-        return v, move
+    infinity = math.inf
 
-    return max_value(state)
+    def alphabeta_search(game, state):
+        """Search game to determine best action; use alpha-beta pruning.
+        As in [Figure 5.7], this version searches all the way to the leaves."""
 
-infinity = math.inf
+        player = state.to_move
 
-def alphabeta_search(game, state):
-    """Search game to determine best action; use alpha-beta pruning.
-    As in [Figure 5.7], this version searches all the way to the leaves."""
+        def max_value(state, alpha, beta):
+            if game.is_terminal(state):
+                return game.utility(state, player), None
+            v, move = -infinity, None
+            for a in game.actions(state):
+                v2, _ = min_value(game.result(state, a), alpha, beta)
+                if v2 > v:
+                    v, move = v2, a
+                    alpha = max(alpha, v)
+                if v >= beta:
+                    return v, move
+            return v, move
 
-    player = state.to_move
+        def min_value(state, alpha, beta):
+            if game.is_terminal(state):
+                return game.utility(state, player), None
+            v, move = +infinity, None
+            for a in game.actions(state):
+                v2, _ = max_value(game.result(state, a), alpha, beta)
+                if v2 < v:
+                    v, move = v2, a
+                    beta = min(beta, v)
+                if v <= alpha:
+                    return v, move
+            return v, move
 
-    def max_value(state, alpha, beta):
-        if game.is_terminal(state):
-            return game.utility(state, player), None
-        v, move = -infinity, None
-        for a in game.actions(state):
-            v2, _ = min_value(game.result(state, a), alpha, beta)
-            if v2 > v:
-                v, move = v2, a
-                alpha = max(alpha, v)
-            if v >= beta:
-                return v, move
-        return v, move
+        return max_value(state, -infinity, +infinity)
 
-    def min_value(state, alpha, beta):
-        if game.is_terminal(state):
-            return game.utility(state, player), None
-        v, move = +infinity, None
-        for a in game.actions(state):
-            v2, _ = max_value(game.result(state, a), alpha, beta)
-            if v2 < v:
-                v, move = v2, a
-                beta = min(beta, v)
-            if v <= alpha:
-                return v, move
-        return v, move
+    def random_player(game, state): return random.choice(list(game.actions(state)))
 
-    return max_value(state, -infinity, +infinity)
+    def player(search_algorithm):
+        """A game player who uses the specified search algorithm"""
+        return lambda game, state: search_algorithm(game, state)[1]
 
-def random_player(game, state): return random.choice(list(game.actions(state)))
-
-def player(search_algorithm):
-    """A game player who uses the specified search algorithm"""
-    return lambda game, state: search_algorithm(game, state)[1]
->>>>>>> Ian
