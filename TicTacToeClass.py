@@ -2,6 +2,9 @@ from collections import namedtuple, Counter, defaultdict
 import random
 import math
 import functools
+
+from tables.idxutils import infinity
+
 cache = functools.lru_cache(10**6)
 
 class Game:
@@ -69,7 +72,7 @@ class TicTacToe(Game):
         self.numRows = numRows
         self.numCols = numCols
         self.numWin = numWin
-        self.board = [['' for j in range(numCols)] for i in range(numRows)]
+        self.board = [[' ' for j in range(numCols)] for i in range(numRows)]
         self.currentPlayer = 'X'
        # self.initial = Board(height=height, width=width, to_move='X', utility=0)
 
@@ -78,10 +81,10 @@ class TicTacToe(Game):
             for j in range(self.numCols):
                 print(self.board[i][j], end='')
                 if j < self.numCols - 1:
-                    print('|', end='')
+                    print('| ', end='')
             print()
-            if i <self.numRows - 1:
-                print('_' *(self.numCols*2 - 1))
+            if i < self.numRows - 1:
+                print('_' * (self.numCols * 2 - 1))
     def getLegalMoves(self):
         legalMoves = []
         for i in range(self.numRows):
@@ -94,7 +97,7 @@ class TicTacToe(Game):
         self.board[i][j] = self.currentPlayer
 
     def switchPlayer(self):
-        if self.currentPlayer =='X':
+        if self.currentPlayer == 'X':
             self.currentPlayer = 'O'
         else:
             self.currentPlayer = 'X'
@@ -158,11 +161,13 @@ class TicTacToe(Game):
         """Legal moves are any square not yet taken."""
         return self.squares - set(board)
 
+
+
     def result(self, board, square):
         """Place a marker for current player on square."""
         player = board.to_move
         board = board.new({square: player}, to_move=('O' if player == 'X' else 'X'))
-        win = k_in_row(board, player, square, self.k)
+        win = self.k_in_row(board, player, square, self.k)
         board.utility = (0 if not win else +1 if player == 'X' else -1)
         return board
 
@@ -176,12 +181,14 @@ class TicTacToe(Game):
 
     def display(self, board): print(board)
 
-
     def k_in_row(board, player, square, k):
         """True if player has k pieces in a line through square."""
         def in_row(x, y, dx, dy): return 0 if board[x, y] != player else 1 + in_row(x + dx, y + dy, dx, dy)
         return any(in_row(*square, dx, dy) + in_row(*square, -dx, -dy) - 1 >= k
                for (dx, dy) in ((0, 1), (1, 0), (1, 1), (1, -1)))
+
+
+
 
     def play_game(game, strategies: dict, verbose=False):
         """Play a turn-taking game. `strategies` is a {player_name: function} dict,
