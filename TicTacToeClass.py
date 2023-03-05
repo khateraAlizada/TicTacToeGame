@@ -76,6 +76,10 @@ class TicTacToe(Game):
         self.currentPlayer = 'X'
        # self.initial = Board(height=height, width=width, to_move='X', utility=0)
 
+    def getGameState(self):
+        return self.board, self.currentPlayer
+
+
     def printBoard(self):
         for i in range(self.numRows):
             for j in range(self.numCols):
@@ -92,6 +96,9 @@ class TicTacToe(Game):
                 if self.board[i][j] == ' ':
                     legalMoves.append((i, j))
         return legalMoves
+
+
+
     def makeMove(self, move):
         i, j = move
         self.board[i][j] = self.currentPlayer
