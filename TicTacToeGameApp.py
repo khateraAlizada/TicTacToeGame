@@ -17,7 +17,9 @@ def main():
         print("Search strategy for play O is: " + searchStrategyO)
         # def game(self, searchStrategyX, searchStrategyO):
 
-        # if searchStrategyO == "alpha" or searchStrategyX == "alpha" or searchStrategyO == "minimax" or searchStrategyX = "minimax":
+       # if searchStrategyO == "alpha" or searchStrategyX == "alpha" or searchStrategyO == "minimax" or searchStrategyX = "minimax":
+
+
         #     search_fn = alphabeta_search
         # elif searchStrategyO == "minimax":
         #     search_fn = minimax_search
@@ -29,10 +31,13 @@ def main():
         # else:
         #     game.game(searchStrategyX, searchStrategyO)
         game.game(searchStrategyX, searchStrategyO)
-        state = game.printBoard()
+        # state = game.printBoard()
+
+        print("game: ")
         print(game)
         print(game.getGameState())
         state = game.getGameState()
+        print("state: ")
         print(state)
         print("print board:")
 
