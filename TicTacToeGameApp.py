@@ -19,8 +19,12 @@ def main():
 
         if searchStrategyX == "random" and searchStrategyO == "random":
             play_game(game, dict(X=random_player, O=random_player), verbose=True).utility
-        if searchStrategyX == "minimax" and searchStrategyO == "random":
-            play_game(game, dict(X=random_player, O=random_player), verbose=True).utility
+        if searchStrategyX == "minimax" and searchStrategyO == "minimax":
+            play_game(game, dict(X=player(minimax_search), O=player(minimax_search)), verbose=True).utility
+        if searchStrategyX == "alpha" and searchStrategyO == "alpha":
+            play_game(game, dict(X=player(alphabeta_search), O=player(alphabeta_search)), verbose=True).utility
+        if searchStrategyX == "alpha" and searchStrategyO == "random":
+            play_game(game, dict(X=player(alphabeta_search), O=random_player), verbose=True).utility
 
 
         """ Prof. Ben's Update """

@@ -40,6 +40,11 @@ def play_game(game, strategies: dict, verbose=False):
         if verbose:
             print('Player', player, 'move:', move)
             print(state)
+
+    if game.result(state, move).utility == 0:
+        print("tie game")
+    else:
+        print("player " + player + " wins.")
     return state
 
 def minimax_search(game, state):
@@ -124,6 +129,7 @@ class TicTacToe(Game):
         board = board.new({square: player}, to_move=('O' if player == 'X' else 'X'))
         win = k_in_row(board, player, square, self.k)
         board.utility = (0 if not win else +1 if player == 'X' else -1)
+
         return board
 
     def utility(self, board, player):
