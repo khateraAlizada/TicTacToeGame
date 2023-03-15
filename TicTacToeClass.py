@@ -40,9 +40,10 @@ def play_game(game, strategies: dict, verbose=False):
         if verbose:
             print('Player', player, 'move:', move)
             print(state)
-
+    print(game.result(state, move).utility)
     if game.result(state, move).utility == 0:
         print("tie game")
+
     else:
         print("player " + player + " wins.")
     return state

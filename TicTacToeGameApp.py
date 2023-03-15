@@ -10,6 +10,7 @@ def main():
         print("\nSearch strategy for O is " + searchStrategyO + "\n")
         print("\nSearch strategy for X is " + searchStrategyX + "\n")
 
+        # game = TicTacToe(int(size), int(size), 3)
         game = TicTacToe(int(size), int(size), int(size))
         print("Search strategy for play X is: " + searchStrategyX)
         print("Search strategy for play O is: " + searchStrategyO)
@@ -25,8 +26,37 @@ def main():
             play_game(game, dict(X=player(alphabeta_search), O=player(alphabeta_search)), verbose=True).utility
         if searchStrategyX == "alpha" and searchStrategyO == "random":
             play_game(game, dict(X=player(alphabeta_search), O=random_player), verbose=True).utility
+        if searchStrategyX == "random" and searchStrategyO == "alpha":
+            play_game(game, dict(X=random_player, O= player(alphabeta_search)), verbose=True).utility
+        if searchStrategyX == "minimax" and searchStrategyO == "random":
+            play_game(game, dict(X=player(minimax_search), O=random_player), verbose=True).utility
+        if searchStrategyX == "random" and searchStrategyO == "minimax":
+            play_game(game, dict(X=random_player, O=player(minimax_search)), verbose=True).utility
+        if searchStrategyX == "alpha" and searchStrategyO == "minimax":
+            play_game(game, dict(X=player(alphabeta_search), O=player(minimax_search)), verbose=True).utility
+        if searchStrategyX == "minimax" and searchStrategyO == "alpha":
+            play_game(game, dict(X=player(minimax_search), O=player(alphabeta_search)), verbose=True).utility
 
-
+        # if searchStrategyX == "random":
+        #     X = random_player
+        # else:
+        #     if searchStrategyX == "alpha":
+        #         X = player(alphabeta_search)
+        #     else:
+        #         if searchStrategyX == "minimax":
+        #             X = player(minimax_search)
+        #         else: print("not a valid search strategy")
+        # if searchStrategyO == "random":
+        #     O = random_player
+        # else:
+        #     if searchStrategyO == "alpha":
+        #         O = player(alphabeta_search)
+        #     else:
+        #         if searchStrategyO == "minimax":
+        #             O = player(minimax_search)
+        #         else: print("not a valid search strategy")
+        # print(X, O)
+        # play_game(game, dict(X, O), verbose=True).utility
         """ Prof. Ben's Update """
 
         response = input("Would you like to run the game again? ('Yes' or 'No').\n").title()
