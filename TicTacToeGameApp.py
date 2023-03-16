@@ -10,8 +10,8 @@ def main():
         print("\nSearch strategy for O is " + searchStrategyO + "\n")
         print("\nSearch strategy for X is " + searchStrategyX + "\n")
 
-        # game = TicTacToe(int(size), int(size), 3)
-        game = TicTacToe(int(size), int(size), int(size))
+        game = TicTacToe(int(size), int(size), 3)
+        # game = TicTacToe(int(size), int(size), int(size))
         print("Search strategy for play X is: " + searchStrategyX)
         print("Search strategy for play O is: " + searchStrategyO)
         # def game(self, searchStrategyX, searchStrategyO):
@@ -19,23 +19,23 @@ def main():
         """ Prof. Ben's Update """
 
         if searchStrategyX == "random" and searchStrategyO == "random":
-            play_game(game, dict(X=random_player, O=random_player), verbose=True).utility
+            print(play_game(game, dict(X=random_player, O=random_player), verbose=True).utility)
         if searchStrategyX == "minimax" and searchStrategyO == "minimax":
-            play_game(game, dict(X=player(minimax_search), O=player(minimax_search)), verbose=True).utility
+            print(play_game(game, dict(X=player(minimax_search), O=player(minimax_search)), verbose=True).utility)
         if searchStrategyX == "alpha" and searchStrategyO == "alpha":
-            play_game(game, dict(X=player(alphabeta_search), O=player(alphabeta_search)), verbose=True).utility
+            print(play_game(game, dict(X=player(alphabeta_search), O=player(alphabeta_search)), verbose=True).utility)
         if searchStrategyX == "alpha" and searchStrategyO == "random":
-            play_game(game, dict(X=player(alphabeta_search), O=random_player), verbose=True).utility
+            print(play_game(game, dict(X=player(alphabeta_search), O=random_player), verbose=True).utility)
         if searchStrategyX == "random" and searchStrategyO == "alpha":
-            play_game(game, dict(X=random_player, O= player(alphabeta_search)), verbose=True).utility
+            print(play_game(game, dict(X=random_player, O= player(alphabeta_search)), verbose=True).utility)
         if searchStrategyX == "minimax" and searchStrategyO == "random":
-            play_game(game, dict(X=player(minimax_search), O=random_player), verbose=True).utility
+            print(play_game(game, dict(X=player(minimax_search), O=random_player), verbose=True).utility)
         if searchStrategyX == "random" and searchStrategyO == "minimax":
-            play_game(game, dict(X=random_player, O=player(minimax_search)), verbose=True).utility
+            print(play_game(game, dict(X=random_player, O=player(minimax_search)), verbose=True).utility)
         if searchStrategyX == "alpha" and searchStrategyO == "minimax":
-            play_game(game, dict(X=player(alphabeta_search), O=player(minimax_search)), verbose=True).utility
+            print(play_game(game, dict(X=player(alphabeta_search), O=player(minimax_search)), verbose=True).utility)
         if searchStrategyX == "minimax" and searchStrategyO == "alpha":
-            play_game(game, dict(X=player(minimax_search), O=player(alphabeta_search)), verbose=True).utility
+            print(play_game(game, dict(X=player(minimax_search), O=player(alphabeta_search)), verbose=True).utility)
 
         # if searchStrategyX == "random":
         #     X = random_player
